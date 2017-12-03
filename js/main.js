@@ -1,52 +1,55 @@
 $(document).ready(() => {
   $('#searchForm').on('submit', (e) => {
     let searchText = $('#searchText').val();
-    console.log(searchText);
     getMovies(searchText);
-    e.preventDefault(); // stop form from submitting to file
+    e.preventDefault();
   });
 });
 
-function getMovies(searchText) {
-  axios.get('https://api.themoviedb.org/3/search/movie?api_key=2b8ee5f2fd65ec098a098c4dd33937e0&query=' + searchText)
-  .then((response) => {
+function getMovies(searchText){
 
-    let movies = response.data.results;
-        console.log(movies);
-        let output = '';
-        $.each(movies, function(index, movie){
-            output += '<div class="col-md-3">';
-            output +=   '<div class="well text-center">';
-            output +=        '<img onerror="handleMissingImg(this);" src="http://image.tmdb.org/t/p/w185/'+movie.poster_path+'">';
-            output +=       '<h5>'+ movie.title+'</h5>';
-            output +=       '<a onclick=movieSelected("'+ movie.id +' class="btn btn-primary" href="#")>Movie Details</a>';
-            output +=   '</div>';
+  axios.get('http://www.omdbapi.com?s=' + searchText + '&apikey=6fe066fc')
+    .then((response) => {
+      console.log(response);
+      let movies = response.data.Search;
+      let output = '';
+      $.each(movies, (index, movie) => {
+        output += '<div class="col-md-3">';
+        output += '<div class="well text-center">';
+              if(movie.Poster ==="N/A"){
+                output += `<img src="http://reelcinemas.ae/Images/Movies/not-found/no-poster.jpg">`;
+              }
+              else{
+                output += `<img src="${movie.Poster}">`;
+              }
+              output += `<h5>${movie.Title}</h5>`;
+              output += `<a onclick="movieSelected('${movie.imdbID}')" class="btn btn-primary" href="#">Movie Details</a>`;
             output += '</div>';
-        });
+          output += '</div>';
+      });
 
-        $('#movies').html(output);
-
+      $('#movies').html(output);
     })
-    .catch(function (error) {
-        console.log(error);
-        console.log('something is going wrong');
+    .catch((err) => {
+      console.log(err);
     });
-}﻿
+}
 
-function movieSelected(id) {
+function movieSelected(id){
   sessionStorage.setItem('movieId', id);
   window.location = 'movie.html';
   return false;
 }
 
-
-function getMovie() {
+function getMovie(){
   let movieId = sessionStorage.getItem('movieId');
-  axios.get('https://api.themoviedb.org/3/movie/' + movieId + '?api_key=2b8ee5f2fd65ec098a098c4dd33937e0').then((response) => {
-    console.log(response);
-    let movie = response.data;
 
-    let output = `
+  axios.get('http://www.omdbapi.com?i=' + movieId + '&apikey=6fe066fc')
+    .then((response) => {
+      console.log(response);
+      let movie = response.data;
+
+      let output =`
         <div class="row">
           <div class="col-md-4">
             <img src="${movie.Poster}" class="thumbnail">
@@ -75,8 +78,9 @@ function getMovie() {
         </div>
       `;
 
-    $('#movie').html(output);
-  }).catch((err) => {
-    console.log(err);
-  });
+      $('#movie').html(output);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
