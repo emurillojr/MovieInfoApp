@@ -1,13 +1,24 @@
-#movies img, #movie img{
-  width:100%;
+#movies img, #movie img {
+  width: 100%;
 }
 
-@media(min-width:960px){
-  #movies .col-md-3 .well{
+@media(min-width:960px) {
+  #movies .col-md-3 .well {
     height: 390px;
   }
-
-  #movies .col-md-3 img{
-    height:240px;
+  #movies .col-md-3 img {
+    height: 240px;
   }
+}
+
+form, #results {
+  padding: 0 20px;
+}
+
+.item {
+  margin-bottom: 25px;
+}
+
+.w100 {
+  width: 100%;
 }
